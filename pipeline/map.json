@@ -1,0 +1,146 @@
+{
+    // Map page parts the RouteMap action reads (spec 03 section 7). Never in a next list:
+    // RouteMap runs them with ROIs relative to the bus, so it overrides every roi below but MapBus's.
+    // The other default ROIs fit a map at rest (bus template at 446,248) for maa-tools test.
+    // MapBus: from the screen's left edge, where RouteMap drags the bus (x 50, #111).
+    "MapBus": {
+        "recognition": "TemplateMatch",
+        "roi": [0, 60, 1100, 560],
+        "template": "Map/MapBus.png",
+        "threshold": 0.8
+    },
+    // #194: the bus with the camera zoomed in on it (~1.8x), as backing out of a node's formation leaves the map.
+    // Only tells RouteMap the map is zoomed; the node panel zooms in the same way, so it hits there too.
+    "MapBusZoomed": {
+        "recognition": "TemplateMatch",
+        "roi": [0, 60, 1100, 560],
+        "template": "Map/MapBusZoomed.png",
+        "threshold": 0.8
+    },
+    // Chevrons sit only on the lit links from the bus: the slots the bus can move to.
+    // Green-masked: the link line behind them takes the theme pack's colour.
+    "MapLinkUp": {
+        "recognition": "TemplateMatch",
+        "roi": [536, 133, 110, 110],
+        "template": "Map/MapLinkUp.png",
+        "green_mask": true,
+        "threshold": 0.8
+    },
+    "MapLinkMid": {
+        "recognition": "TemplateMatch",
+        "roi": [541, 238, 110, 80],
+        "template": "Map/MapLinkMid.png",
+        "green_mask": true,
+        "threshold": 0.8
+    },
+    "MapLinkDown": {
+        "recognition": "TemplateMatch",
+        "roi": [531, 333, 110, 110],
+        "template": "Map/MapLinkDown.png",
+        "green_mask": true,
+        "threshold": 0.8
+    },
+    // Node marks; the default ROIs cover the whole column next to the bus.
+    // Cost coin and gift box badges are UI art, the same on every theme pack.
+    "MapNodeCost": {
+        "recognition": "TemplateMatch",
+        "roi": [640, 0, 180, 620],
+        "template": "Map/MapNodeCost.png",
+        "threshold": 0.8
+    },
+    // #522: the Cost coin with its top rows under the resource bar (map_actions.coin_cut_by_bar): 0.658 on MapPanned.png's
+    // Focused at 725, 106; the 42 events and shops of the labelled map captures 0.408 at most. Over the full frame of
+    // the 227 captures in tests/screens, 74 hits under MapNodeCost's 0.8: on the map captures 11, each a Cost coin (cut
+    // by the HUD, behind a popup or the bus); the 63 others on pages RouteMap does not read.
+    "MapNodeCostCut": {
+        "recognition": "TemplateMatch",
+        "roi": [640, 0, 180, 620],
+        "template": "Map/MapNodeCost.png",
+        "threshold": 0.5
+    },
+    "MapNodeGift": {
+        "recognition": "TemplateMatch",
+        "roi": [640, 0, 180, 620],
+        "template": "Map/MapNodeGift.png",
+        "threshold": 0.8
+    },
+    // The orange WARNING ring of a Risky or Abnormality encounter (#91), hexagonal on most packs, round on some.
+    // The hexagonal one is matched by shape: its colours shift with the pack's glow
+    // (live: a colour template scored 0.67 on an orange pack).
+    "MapNodeFocusedHex": {
+        "recognition": "FeatureMatch",
+        "roi": [640, 0, 180, 620],
+        "template": "Map/MapNodeFocusedHex.png",
+        "count": 12
+    },
+    // Ring pixels only (green-masked): the node art inside differs on every such pack.
+    // #522: the Cards ring scored 0.791 on MapCards.png's Risky at 980, 72 and 1.0 on its Abnormality at 725, 498;
+    // the 114 other labelled nodes of the map captures 0.362 at most. Over the full frame of the 227 captures in
+    // tests/screens it hits from 0.6 on those two rings only.
+    "MapNodeFocusedRound": {
+        "recognition": "TemplateMatch",
+        "roi": [640, 0, 180, 620],
+        "template": [
+            "Map/MapNodeFocusedRound.png",
+            "Map/MapNodeFocusedRoundCards.png"
+        ],
+        "green_mask": true,
+        "threshold": [0.8, 0.6]
+    },
+    // The boss node glows saturated red on every pack seen. So do the red packs' "?" nodes, less:
+    // live 2026-10-18 ("Charm, Wander, Doubt") 388-506 px in range against 1530-1783 for three bosses.
+    // Default roi: the middle slot's body at rest; red affinity icons sit outside it.
+    "MapNodeBoss": {
+        "recognition": "ColorMatch",
+        "roi": [685, 245, 80, 80],
+        "method": 4,
+        "lower": [170, 0, 0],
+        "upper": [255, 70, 70],
+        "count": 1000
+    },
+    // Glyphs take the pack's colour, so they are matched by shape (SIFT works on grey).
+    "MapNodeEvent": {
+        "recognition": "FeatureMatch",
+        "roi": [640, 0, 180, 620],
+        "template": [
+            "Map/MapNodeEvent.png",
+            "Map/MapNodeEventRock.png",
+            "Map/MapNodeEventCards.png"
+        ],
+        "count": 6
+    },
+    "MapNodeShop": {
+        "recognition": "FeatureMatch",
+        "roi": [640, 0, 180, 620],
+        "template": [
+            "Map/MapNodeShop.png",
+            "Map/MapNodeShopCards.png"
+        ],
+        "count": 6
+    },
+    // The shop icon in grey, for a screenshot flattened to its brightness (map_actions.shop_icon): the colour templates above
+    // miss it on some packs (cyan, orange). Run on a crop, so the roi is the crop.
+    "MapNodeShopIcon": {
+        "recognition": "TemplateMatch",
+        "roi": [640, 0, 180, 620],
+        "template": "Map/MapNodeShopIcon.png",
+        "method": 5,
+        "threshold": 0.45
+    },
+    // The same shop icon with the "+" variant's star and plus (hard floors; the plain template scores 0.33-0.39 on it): 6 captures averaged.
+    "MapNodeShopIconPlus": {
+        "recognition": "TemplateMatch",
+        "roi": [640, 0, 180, 620],
+        "template": "Map/MapNodeShopIconPlus.png",
+        "method": 5,
+        "threshold": 0.6
+    },
+    // The "+" variant's torn red frame (LCB Regular Check-up, floor 5): one capture, the "+" template scores 0.35 on it.
+    "MapNodeShopIconTorn": {
+        "recognition": "TemplateMatch",
+        "roi": [640, 0, 180, 620],
+        "template": "Map/MapNodeShopIconTorn.png",
+        "method": 5,
+        "threshold": 0.6
+    }
+}

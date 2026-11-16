@@ -1,0 +1,114 @@
+{
+    // Stuck handling (spec 06). A stuck reported by the Agent waits in StuckFlag for MirrorHub's
+    // Stuck node; MirrorHub's own timeout lands in GlobalStuck. Recover picks the level and runs
+    // RecoverL1-3 with context.run_task; then both go back to MirrorHub explicitly ([JumpBack]
+    // does not work on the on_error path).
+    "Stuck": {
+        "recognition": "Custom",
+        "custom_recognition": "StuckFlag",
+        "action": "Custom",
+        "custom_action": "Recover",
+        "next": [
+            "MirrorHub"
+        ]
+    },
+    "GlobalStuck": {
+        "action": "Custom",
+        "custom_action": "Recover",
+        "next": [
+            "MirrorHub"
+        ]
+    },
+    // L1: the back key; the global popups come first in MirrorHub anyway. Its 2 s stay (#58): L1 runs on a screen the hub
+    // knows but got stuck on, so a screen the hub knows cannot tell the key's page from the one before it, and the hub
+    // would act on that one again; nothing else is known to wait for. 6 L1s in the archived logs.
+    "RecoverL1": {
+        "action": "Custom",
+        "custom_action": "DismissShot",
+        "custom_action_param": {
+            "back": true
+        },
+        "post_delay": 2000
+    },
+    // L2: Dungeon Progress (already open, e.g. by L1's back key on the map, or by the map's gear),
+    // To Window, Pause Exploration Confirm. The main menu follows; MirrorHub navigates back to the
+    // entry page and resumes the run. Not on the map: L2 does not go through, so L3 follows.
+    // The 2 s, 2 s and 5 s of its taps stay (#58): a recovery that waits on purpose. The next node's recognition would
+    // hit while its panel or dialog still opens; the wait lets it finish first, as a tap it lets go by fails L2 into a
+    // game restart. The archived logs have 1 RecoverGear and no RecoverToWindow or RecoverPauseConfirm,
+    // nothing to time the panel on; after the last Confirm, the 5 s are the progress saving and the way to the window.
+    "RecoverL2": {
+        "next": [
+            "RecoverToWindow",
+            "RecoverGear"
+        ]
+    },
+    // 2 s (#58, as above): for Dungeon Progress to finish opening before To Window is tapped.
+    "RecoverGear": {
+        "recognition": "Or",
+        "any_of": [
+            "MirrorMap"
+        ],
+        "action": "Click",
+        "target": [1212, 25, 40, 40],
+        "post_delay": 2000,
+        "next": [
+            "RecoverToWindow"
+        ]
+    },
+    // 2 s (#58, as above): for the Save your progress dialog to finish opening before its Confirm.
+    "RecoverToWindow": {
+        "recognition": "OCR",
+        "roi": [520, 212, 240, 30],
+        "expected": "Dungeon Progress",
+        "action": "Click",
+        "target": [700, 380, 76, 110],
+        "post_delay": 2000,
+        "next": [
+            "RecoverPauseConfirm"
+        ]
+    },
+    // 5 s (#58, as above): the progress saving and the way to the window, before MirrorHub looks.
+    "RecoverPauseConfirm": {
+        "recognition": "OCR",
+        "roi": [360, 280, 560, 140],
+        "expected": "Save your progress",
+        "action": "Click",
+        "target": [670, 475, 180, 30],
+        "post_delay": 5000
+    },
+    // L3: restart the game and wait for its title screen. The 3 s after the stop stay (#58): the game's process takes time
+    // to end, which no screen shows, and a start before that brings the old one back to the front.
+    "RecoverL3": {
+        "action": "StopApp",
+        "package": "com.ProjectMoon.LimbusCompany",
+        "post_delay": 3000,
+        "next": [
+            "RecoverStartApp"
+        ]
+    },
+    // timeout is the wait for next, so it sits here, not on RecoverTitle (there it was never read: a restart
+    // that took more than ~30 s to reach the title failed L3, 33.5 s in an offline run, #86). The 10 s stay (#58): in the
+    // 6 archived restarts that reached it, the title came 3.5-11.4 s after them (13.5-21.4 s after the start), so they
+    // cost nothing, and they keep the start's splash screens away from RecoverTitle's PopupButton OCR.
+    "RecoverStartApp": {
+        "action": "StartApp",
+        "package": "com.ProjectMoon.LimbusCompany",
+        "post_delay": 10000,
+        "timeout": 180000,
+        "next": [
+            "RecoverTitle"
+        ]
+    },
+    // The title, also under its dialogs (they only tint it); a download dialog, the User Agreement or an error box that
+    // hides it counts too. MirrorHub answers them: DownloadDialog confirms, UserAgreement ticks, PopupButton presses.
+    "RecoverTitle": {
+        "recognition": "Or",
+        "any_of": [
+            "NavTitle",
+            "DownloadDialog",
+            "UserAgreement",
+            "PopupButton"
+        ]
+    }
+}

@@ -1,0 +1,72 @@
+# 第三方聲明
+
+本專案的程式碼採 [PolyForm Noncommercial 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0)（`LICENSE`）。取自都市零漢化組的中文名稱與效果文字（`gift_search.json`、`gift_recipes.json`、`event_text.json`、`gift_text.json`、`trial_text.json`、`assets/resource/base/data/graces.json`、`assets/resource/base/data/gift_effects.json`）採 CC BY-NC-SA 4.0，見下方「都市零漢化組」。以下第三方內容各依其授權。
+
+## MaaPracticeBoilerplate
+
+專案骨架（`assets/interface.json` 的結構、`agent/main.py` 的 AgentServer 進入點、`maatools.config.mts`、`tools/` 的 OCR 模型與安裝腳本）參考 [MaaPracticeBoilerplate](https://github.com/MaaXYZ/MaaPracticeBoilerplate) 改寫，依其 MIT 授權保留以下聲明：
+
+```
+MIT License
+
+Copyright (c) 2024 MaaXYZ
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+## OCR 模型 ppocr_v6/small
+
+`assets/resource/base/model/ocr/` 的模型由 `tools/fetch_ocr.py` 從 [MaaCommonAssets](https://github.com/MaaXYZ/MaaCommonAssets/tree/main/OCR/ppocr_v6/small) 下載，不放進 repo。模型出自 [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) 的 PP-OCRv6，採 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) 授權。
+
+## Limbus Company 遊戲素材
+
+`assets/resource/base/image/` 的模板與 `tests/screens/` 的測試截圖取自 Limbus Company 的遊戲畫面，著作權屬於 © Project Moon，不在本專案的授權範圍內。測試截圖中的 UID 與帳號已遮蔽。`assets/resource/base/image/GiftSearch/` 的 327 個飾品圖示與 5 個殘影圖示（`9991.png`–`9995.png`）取自遊戲客戶端 1.117.0 至 1.119.0 的 AssetBundle（每個取自加入那個飾品的版本，工具只寫新的圖示）（`Sprite/EgoGiftIcon`），縮成畫面上的大小（0.21 倍）、透明處填綠色作為比對遮罩，同樣屬於 © Project Moon。`assets/resource/base/data/gift_search.json` 的飾品清單、id、等級與英文名稱，以及 `assets/resource/base/data/theme_packs.yaml` 的主題包清單、id、樓層與英文名稱，取自同一版客戶端的靜態資料。`assets/resource/base/data/event_table.json` 的事件表取自同一版（1.119.0）客戶端的靜態資料與英文在地化（鏡牢事件的 id、故事結尾、選項與提示文字、選項效果與飾品體系），由 `tools/event_table.py` 只摘錄這些欄位，同樣屬於 © Project Moon。`assets/resource/base/data/trials.yaml` 的試煉表（每個 Mounting Trial 的 id、英文名稱、所屬的池與效果數值）取自同一版（1.119.0）客戶端的靜態資料與英文在地化，由 `tools/trial_table.py` 摘錄，再加上本專案算的分數，同樣屬於 © Project Moon。`assets/resource/base/image/Shop/` 的 10 個體系徽章（`Badge<體系>.png`）裁自 1.117.0 實機的商店、合成頁截圖（2026-10-13 至 10-18），縮成飾品圖示模板的比例，徽章以外填綠色作為比對遮罩；`tests/shop/` 是同一批截圖的格子區域，同樣屬於 © Project Moon。`assets/resource/base/data/theme_pack_covers/` 的主題包卡片縮圖（`<主題包 id>.webp`，寬 180 像素）由 `tools/theme_pack_covers.py` 用遊戲客戶端 1.119.0 的素材合成：AssetBundle 的封面與 boss 圖（`card_pack`、`boss` 精靈圖）、玩家資料的卡片外框、logo、警告與攻擊類型圖示，以及主題包的名稱（英文在地化）與顏色（靜態資料），同樣屬於 © Project Moon。縮圖上的標題字型是 Mikodacs（© 2012–2016 gluk，[SIL Open Font License 1.1](https://openfontlicense.org/)），「Long Battle」標籤的字型是 Pretendard（© 2021 Kil Hyung-jin，同為 OFL 1.1），版權聲明都寫在字型檔內的 name table；兩個字型取自同一版客戶端，字型檔本身不放進 repo。縮圖另含 AssetBundle 的「Long Battle」疊圖（`Sprite/UI/ThemePack/Baton.png`）與玩家資料的屬性圖示（`Icon_evil_2_8`–`14`），同屬 © Project Moon。
+
+`assets/resource/base/data/sin_icons/` 的 7 個罪人圖示（PNG，120 × 124 至 120 × 128，保留透明）由 `tools/sin_icons.py` 取自遊戲客戶端 1.119.0 的 APK 玩家資料（`level1` 場景 `UISpriteDataManager` 的 `totalAttributeSpriteList`，精靈圖 `BattleUI_Choice 1_Crimson` 至 `BattleUI_Choice 1_Violet`），同屬 © Project Moon。`assets/resource/base/data/gift_slot/plate.png`（PNG，128 × 128）由 `tools/gift_slot.py` 取自同一版客戶端：APK 玩家資料的 prefab `EgoGiftIconPrefab` 其 `DUISpriteSetter` 指向 Legacy 主題圖集 `MirrorDungeon/EgoGift`（在 AssetBundle 裡）的精靈圖 `EgoGift_bg1`，同屬 © Project Moon。這兩份檔案的讀者是 lc-helper，經 maalc 發佈的資源包（ADR 0012）取用。
+
+本專案是非官方的粉絲作品，與 Project Moon 無關。以上素材僅供自動化辨識之用；著作權人如要求移除，會立即從 repo 移除。
+
+## 預設主題包分數
+
+`assets/resource/base/data/theme_packs.yaml` 預設方案（`default_plan`）的每包分數取自 [AhabAssistantLimbusCompany](https://github.com/KIYI671/AhabAssistantLimbusCompany)（AALC）的預設權重表 [assets/config/theme_pack_list.example.yaml](https://github.com/KIYI671/AhabAssistantLimbusCompany/blob/45d9a5809456d008fc2c16f28d52882bf388cd1d/assets/config/theme_pack_list.example.yaml)（commit `45d9a58`，2026-08-05；2026-10-22 取用時 `main` 為 `e1d1749`，這個檔案沒有更動）。AALC 採 [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.html) 授權。本專案只取每個主題包的分數（數字），依 AALC 自己的片段比對規則對到本專案的主題包完整名稱，不複製它的檔案或程式碼（[ADR 0001](docs/adr/0001-mit-and-no-agpl-derived-assets.md)：權重這類參數可以參考）。
+
+## 觀測飾品與合成飾品的資料
+
+`assets/resource/base/data/gift_recipes.json` 與 `assets/resource/base/data/gift_search.json` 的飾品清單、id、等級、體系與英文名稱、配方、主題包專屬標記（`isSpecific`、`specificEgoGiftPool`）取自遊戲客戶端 1.119.0 的靜態資料與英文在地化（© Project Moon），只摘錄這些欄位；`assets/resource/base/image/GiftRecipe/` 的 143 個圖示（含 `extra_gifts` 的 69 個）取自同一版 AssetBundle 的 `Sprite/EgoGiftIcon`，縮 0.21 倍、透明處填綠色，同屬 © Project Moon。`assets/resource/base/data/gift_icons/` 的 475 個圖示（112 px WebP，保留透明）取自同一版 AssetBundle 的 `Sprite/EgoGiftIcon`，同屬 © Project Moon。`assets/resource/base/data/keyword_icons/` 的 10 個體系圖示（64 px WebP，保留透明）取自遊戲客戶端的體系圖示，同屬 © Project Moon。`assets/resource/base/data/grace_icons/` 的 10 個星之恩惠圖示（96 px WebP，保留透明）由 `tools/grace_icons.py` 取自同一版（1.119.0）AssetBundle 的 `Sprite/UI/StartBuffIcon`，同屬 © Project Moon。`assets/resource/base/data/gift_effects.json` 的飾品英文效果文字（設定介面顯示的 475 個飾品）取自同一版（1.119.0）客戶端英文在地化 `EN_EGOgift_*.json` 的 `desc`，狀態標籤存成狀態詞，名稱取自 `EN_Bufs*.json`、`EN_BattleKeywords*.json`，顏色與圖示名取自同一版靜態資料 `buff/*.json` 的 `buffType`、`iconId` 與 `ui/ColorCode.json`，每個飾品的罪孽屬性（`sin`）取自同一版靜態資料 `ego-gift*` 的 `attributeType`，同屬 © Project Moon。`assets/resource/base/data/gift_plates/` 的 7 張名稱牌（WebP，無損）由 `tools/gift_plates.py` 取自同一版 APK 玩家資料的 `MainUI_MirrorDungeon3_3_1` 精靈圖（飾品說明面板的名稱牌），乘上同一版 `UIColorManager` 的罪孽色，部分罪孽色再調暗，同屬 © Project Moon。`assets/resource/base/data/buf_icons/` 的 134 個狀態圖示（32 px WebP，保留透明）由 `tools/buf_icons.py` 取自同一版 AssetBundle 的 `Buf/<圖示名>` 精靈圖，同屬 © Project Moon。`assets/resource/base/data/graces.json` 的星之恩惠英文名稱與英文效果文字取自同一版（1.119.0）客戶端英文在地化：名稱是 `EN_MirrorDungeonUI_5.json` 的 `mirror_dungeon_5_buffs_title_<id>`，效果文字是 `EN_DungeonStartBuffs_MD7.json` 的句型，填入同一版靜態資料（`mirrordungeon-start-buffs-08`）的效果數值與 `EN_Bufs*.json`、`EN_BattleKeywords*.json` 的狀態名稱，黃色標籤改成每段文字的 `up` 標記，其餘顏色標籤去掉，同屬 © Project Moon。`assets/resource/base/data/grace_card/` 的 10 個星光頁零件（卡面、選取的卡面、游標外框、按鈕底板與 `+` 符號、星光圖示、`Enhance All` 面板、頁面背景，WebP）由同一支工具取自同一版 APK 玩家資料的 `MainUI_MirrorDungeon8_2_*`、`MainUI_MirrorDungeon6_2_9`、`MainUI_MirrorDungeon3_3_22`、`MainUI_BattleSelection_7_15` 與 `MainUI_MirrorDungeon8_1_0` 精靈圖，`+` 符號照 prefab 的顏色上色、按鈕亮起的底板疊上 prefab 的 Focused 圖，背景縮成 1024 px、星光圖示縮成 64 px，同屬 © Project Moon。
+
+## 都市零漢化組（LLC）的中文名稱與效果文字
+
+飾品與星之恩惠的繁體中文名稱取自 [都市零漢化組（Localize Limbus Company，LLC）](https://github.com/LocalizeLimbusCompany/LocalizeLimbusCompany) 的簡體中文在地化，版權屬於 Copyright (c) 2024 to now Localize Limbus Company 與其貢獻者，採 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)（非商用、姓名標示、相同方式共享）授權。本專案使用 release [2026111401](https://github.com/LocalizeLimbusCompany/LocalizeLimbusCompany/releases/tag/2026111401)（2026-11-14）的內容：
+
+- `assets/resource/base/data/gift_search.json` 與 `assets/resource/base/data/gift_recipes.json` 的飾品中文名稱：`LLC_zh-CN/EGOgift_*.json` 的 `name`，依飾品 id 對應。
+- `assets/resource/base/data/graces.json` 的星之恩惠名稱：`LLC_zh-CN/MirrorDungeonUI_5.json` 的 `mirror_dungeon_5_buffs_title_<id>`。效果文字：`LLC_zh-CN/DungeonStartBuffs_MD7.json` 的句型，填入遊戲客戶端 1.119.0 靜態資料（`mirrordungeon-start-buffs-08`）的效果數值與 `LLC_zh-CN/Bufs*.json`、`BattleKeywords*.json` 的狀態名稱。英文名稱與英文效果文字見上一節。
+- `assets/resource/base/data/gift_effects.json` 的飾品中文效果文字：`LLC_zh-CN/EGOgift_*.json` 的 `desc`，依飾品 id 對應，狀態詞的中文名取自 `LLC_zh-CN/Bufs*.json`、`BattleKeywords*.json`。
+- `assets/resource/base/data/event_text.json` 的事件與頁面中文文字：`LLC_zh-CN/` 的事件檔（遊戲客戶端事件在地化檔名去掉 `EN_` 的那個檔）裡每個事件的 `desc`（`eventDesc`）與各選項的 `message`、`messageDesc`，依事件 id 對應；簡體原文留在 `story_cn`、`text_cn`、`hint_cn`，繁體在 `story_zh`、`text_zh`、`hint_zh`。同檔的英文故事與選項全文取自客戶端的英文在地化，屬於 © Project Moon。
+- `assets/resource/base/data/gift_text.json` 的飾品中文名稱與效果：`LLC_zh-CN/EGOgift_*.json` 的 `name`（簡體留在 `cn`，繁體在 `zh`）與 `desc`（簡體在 `desc_cn`，繁體在 `desc_zh`，強化後的效果在 `plus_cn`、`plus_zh`，取 id + 10000 的飾品），狀態標籤換成 `LLC_zh-CN/Bufs*.json` 的狀態名稱，以「」框起。
+- `assets/resource/base/data/trial_text.json` 的試煉中文名稱與效果：`LLC_zh-CN/Bufs_Mirror*.json` 的 `name` 與 `desc`，依試煉的 buff id 對應（簡體在 `cn`、`desc_cn`，繁體在 `zh`、`desc_zh`）。
+
+修改：以 OpenCC `s2twp` 由簡體轉成繁體，再改五個用詞（「指標」改回「指針」、「重新整理」改回「刷新」、「映象」改為「鏡像」、「透過階層」改為「通過階層」、「松肉」改為「鬆肉」）；星之恩惠的效果文字填入數值，黃色標籤改成每段文字的 `up` 標記，其餘顏色標籤去掉；飾品的效果文字存成一段段文字：狀態標籤存成狀態詞的代號（名稱另列），斜體與上色的文字保留斜體與顏色的名稱，其餘標記去掉；中文逐段轉換。事件、飾品與試煉的文字（`event_text.json`、`gift_text.json`、`trial_text.json`）另外去掉標記（`<...>` 標籤）；飾品的效果文字再把 `[狀態]` 換成狀態名稱（簡體原文換成簡體的狀態名稱）；簡轉繁一律經過同一份 `s2twp` 轉換與修正表（`tools/llc_text.py` 的 `to_traditional`），由 `tools/text_tables.py` 寫入。轉換由 `tools/llc_text.py` 與 `tools/text_tables.py` 完成，所用 release 記在各資料檔的 `zh_release`。這七個資料檔的中文名稱與效果文字（含這三個檔的簡體原文）同樣以 CC BY-NC-SA 4.0 授權；檔內的 id、英文名稱、英文效果文字與數值仍是 © Project Moon。
+
+## 發佈 zip 內附的第三方程式
+
+`tools/install.py --release` 組出的發佈 zip 另外附上以下程式，都是原樣下載、不經修改：
+
+- [MXU](https://github.com/MistEO/MXU) v2.7.1 的 `mxu.exe`，採 [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.html) 授權，授權全文在 zip 內的 `LICENSE-MXU`。對應原始碼：<https://github.com/MistEO/MXU/tree/v2.7.1>。
+- [Python](https://www.python.org/) 3.12.10 embeddable package（`python/`），採 PSF License，授權全文在 `python/LICENSE.txt`；`python/Lib/site-packages/` 內的套件各依其授權。
+- [MaaFramework](https://github.com/MaaXYZ/MaaFramework)（`maafw/` 與 `maafw` 套件），採 LGPL-3.0 授權。例外：`maafw/MaaFramework.dll` 是修改過的版本（v5.14.3 加上批次 OCR 細條修正與每個任務的節點詳情上限），對應原始碼：<https://github.com/EnderWolf50/MaaFramework/tree/v5.14.3-maalc.4>。

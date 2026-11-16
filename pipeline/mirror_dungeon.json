@@ -1,0 +1,702 @@
+{
+    // A task's entry: TaskStart drops what the last task of the client's list left in the agent (#364, ADR 0010).
+    "MirrorDungeon": {
+        "action": "Custom",
+        "custom_action": "TaskStart",
+        "next": [
+            "MirrorHub"
+        ]
+    },
+    // The done exit, on every task's hub right after its own Stuck node (MirrorHub's Stuck, ExpStuck, ...) and without [JumpBack]: an action found nothing left to do
+    // (actions.done), and the empty next ends the task a success, so the client's list goes on (#364).
+    "TaskDone": {
+        "recognition": "Custom",
+        "custom_recognition": "DoneFlag",
+        "pre_delay": 0,
+        "post_delay": 0
+    },
+    // Dispatch: every screen is one node; [JumpBack] nodes return here to look again.
+    // next order is priority: Stuck (the watchdog, which must see every pass), global popups,
+    // then dialogs before the page under them.
+    // The OCR screens sit in HubText, never in this list, where MaaFramework would batch them (#157); BattleHUD, two
+    // templates, comes before it: a battle screen needs no OCR pass over its skill text.
+    // rate_limit: a pass is ~0.05-0.5 s of work; the default 1000 ms between passes saw every new screen ~0.5 s late.
+    "MirrorHub": {
+        "timeout": 60000,
+        "rate_limit": 300,
+        "on_error": [
+            "GlobalStuck"
+        ],
+        "next": [
+            "Stuck",
+            "TaskDone",
+            "[JumpBack]BattleHUD",
+            "[JumpBack]Connecting",
+            "[JumpBack]HelpPager",
+            "[JumpBack]HubText",
+            "NoBatchOCR",
+            "[JumpBack]Victory",
+            "[JumpBack]MapNodePanel",
+            "[JumpBack]MirrorMap",
+            "[JumpBack]MirrorFromLux",
+            "[JumpBack]GoToMirrorEntry"
+        ]
+    },
+    // A Luxcavation page (its panel: the EXP and Thread tabs, a Thread card's Level Select), where the last task or the
+    // user left the game: the main window first (GoHome), the way to the entry page from there. Acceptance 5 (K3): a
+    // start on the Thread page knew nothing for 60 s, until the recovery's back key.
+    "MirrorFromLux": {
+        "recognition": "Or",
+        "any_of": [
+            "LuxPanel"
+        ],
+        "action": "Custom",
+        "custom_action": "GoHomeRun"
+    },
+    // MirrorHub's OCR screens, in priority order (#157): one OCR pass the Agent judges (agent/hub_text.py), then the
+    // screens that may be up, each with its own OCR. In MirrorHub's next list MaaFramework would batch them, and the
+    // batch re-reads every text box crossing a roi edge: a battle skill text 1 px into a dialog roi became a 443 x 1
+    // read padded to 21264 px wide, 7.6 s and the Tasker from 4 to 12 GB for good. Each entry ends back in MirrorHub.
+    // Victory heads the tail: it reads only when det finds no box and its whole roi goes to rec, which HubText's pass
+    // never does (tests/screens/Victory.png read 'JICTORY' there).
+    "HubText": {
+        "recognition": "Custom",
+        "custom_recognition": "HubText",
+        "custom_recognition_param": {
+            "base": "ServerPopups",
+            "entries": [
+                "ClaimPopup",
+                "ParallelModePrompt",
+                "PreviousSessionExpired",
+                "PopupButton",
+                "Notices",
+                "Mailbox",
+                "SettingsMenu",
+                "ProgressPanel",
+                "ExplorationReward",
+                "RunVictory",
+                "DefeatScreen",
+                "ExplorationComplete",
+                "MirrorEnterDialog",
+                "ResumeDialog",
+                "ParallelModeOn",
+                "MirrorEntryUnclaimed",
+                "MirrorEntryPaused",
+                "MirrorEntryNewRun",
+                "LevelWarning",
+                "TeamSelect",
+                "StarlightConfirm",
+                "StarlightPage",
+                "GiftGet",
+                "GiftSearchForgo",
+                "GiftSearch",
+                "StartingGift",
+                "ThemePack",
+                "RewardCardForgo",
+                "GiftRefuseDialog",
+                "RewardCard",
+                "GiftChoice",
+                "Shop",
+                "Event",
+                "WipeDialog",
+                "Formation"
+            ],
+            "tail": [
+                "Victory",
+                "MapNodePanel",
+                "MirrorMap",
+                "MirrorFromLux",
+                "GoToMirrorEntry"
+            ]
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 300,
+        // Its picks look once: a screen gone by then (the last loading screen) goes back to MirrorHub, which reads the
+        // next one (#115: 1 s here held the theme pack page up 1.7 s, 400 ms still 0.7 s). MaaFramework ends a next
+        // list once a failed pass has taken longer than its timeout, so 0 is one pass.
+        "timeout": 0,
+        "on_error": [
+            "HubTextLost"
+        ]
+    },
+    // None of the screens HubText saw is up any more: back to MirrorHub (the jump back).
+    "HubTextLost": {
+        "pre_delay": 0,
+        "post_delay": 0
+    },
+    // A battle screen (#157): the turn or the pause, without HubText's OCR pass over the skill text. The server's
+    // popups, which can come up mid-battle, still come before the turn here, each behind a template (popups.json), so
+    // a battle round reads no text (one OCR each, ~130 ms a round in the live A/B before the gates).
+    "BattleHUD": {
+        "recognition": "Or",
+        "any_of": [
+            "BattleMenu",
+            "LuxBattleMenu",
+            "EgoCard",
+            "BattleTurn",
+            "BattlePause"
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 300,
+        "timeout": 3000,
+        "on_error": [
+            "BattleHUDLost"
+        ],
+        "next": [
+            "NoBatchOCR",
+            "Connecting",
+            "RetryPopup",
+            "UpdateDialog",
+            "PopupButton",
+            "BattleMenu",
+            "LuxBattleMenu",
+            "EgoCard",
+            "BattleTurn",
+            "BattlePause"
+        ]
+    },
+    // The HUD went before its list saw anything: back to MirrorHub (the jump back), not the task's end.
+    "BattleHUDLost": {},
+    // Keeps MaaFramework from batching a next list's OCR (#157). The batch takes the model of the list's first OCR
+    // and leaves out the others (PipelineTask::try_add_ocr_node), so this node's model, which no other OCR uses,
+    // leaves a batch of one: none. Never hits; the 1 x 1 ColorMatch fails before the OCR, so the model is never
+    // loaded.
+    "NoBatchOCR": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "ColorMatch",
+                "sub_name": "NoBatchOCRGate",
+                "roi": [0, 0, 1, 1],
+                "lower": [0, 0, 0],
+                "upper": [255, 255, 255],
+                "count": 2
+            },
+            {
+                "recognition": "OCR",
+                "sub_name": "NoBatchOCRModel",
+                "model": "no-batch"
+            }
+        ]
+    },
+    // Entry page with Parallel Superposition Mode ON (#94): switched OFF before anything else, the bot never plays
+    // past floor 5. Texts: EN_MirrorDungeonUI_5_InfinityFloor ("Parallel Superposition Mode : " + ON / OFF).
+    // Its dialogs (Resume, Enter) come first in the hub: the label reads through them. The red ON reads `oN` (live
+    // 2026-11-08, EntryParallelOn.png).
+    "ParallelModeOn": {
+        "recognition": "OCR",
+        "roi": [890, 330, 330, 28],
+        "expected": "Superposition.*:\\s*[Oo0]N\\b",
+        "action": "Custom",
+        "custom_action": "ParallelModeOff"
+    },
+    // Entry page: branch on the Exploring: field (spec 01, 入口頁的分流).
+    "MirrorEntryNewRun": {
+        "recognition": "OCR",
+        "roi": [990, 140, 230, 35],
+        "expected": "Before Entry",
+        "action": "Custom",
+        "custom_action": "PlanRun",
+        "post_delay": 0
+    },
+    // A paused run (after To Window, a restart, or by hand): Enter opens the Resume dialog.
+    // The game plays its chains for ~3.7 s before the team page (3.6-3.9 s in six live runs, #269) and the entry page, "F1"
+    // and Enter still showing, reads like itself until then: a timeout under that, and MirrorHub taps Enter again. The
+    // wait ends the moment a page shows, so a long timeout costs nothing.
+    "MirrorEntryPaused": {
+        "recognition": "OCR",
+        "roi": [990, 140, 230, 35],
+        "expected": "F\\s*\\d",
+        "action": "Custom",
+        "custom_action": "TapUntil",
+        "post_delay": 0,
+        "custom_action_param": {
+            "target": [1030, 470, 160, 50],
+            "next": [
+                {"roi": [80, 272, 100, 28], "expected": "^TEAMS$"},
+                {"roi": [520, 380, 240, 40], "expected": "^Resume$"}
+            ],
+            "timeout": 8
+        }
+    },
+    // Dungeon Progress with Resume / Halt Exploration / Cancel: always Resume (spec 01 入口頁的分流).
+    "ResumeDialog": {
+        "recognition": "OCR",
+        "roi": [520, 380, 240, 40],
+        "expected": "^Resume$",
+        "action": "Custom",
+        "custom_action": "TapUntil",
+        "post_delay": 0,
+        "custom_action_param": {
+            "target": [520, 380, 240, 40],
+            "gone": {"roi": [520, 380, 240, 40], "expected": "^Resume$"},
+            "timeout": 4
+        }
+    },
+    // Unclaimed rewards: Enter opens the Exploration Reward window, settled like any other.
+    "MirrorEntryUnclaimed": {
+        "recognition": "OCR",
+        "roi": [990, 140, 230, 35],
+        "expected": "Exploration Complete",
+        "action": "Custom",
+        "custom_action": "TapUntil",
+        "post_delay": 0,
+        "custom_action_param": {
+            "target": [1030, 470, 160, 50],
+            "next": {"roi": [500, 100, 280, 45], "expected": "Exploration Reward"}
+        }
+    },
+    // Also pops up by itself on the entry page while rewards are pending (captures/253).
+    // Settle: goal check, weekly-bonus toggles, Claim or GiveUpRewards (spec 03 section 14).
+    "ExplorationReward": {
+        "recognition": "OCR",
+        "roi": [500, 100, 280, 45],
+        "expected": "Exploration Reward",
+        "action": "Custom",
+        "custom_action": "Settle"
+    },
+    // After a Claim that spends weekly bonuses (live 2026-10-16): `Rewards Acquired`, then `Pass Level Up`,
+    // each over the Exploration Complete summary and closed by its Confirm.
+    "ClaimPopup": {
+        "recognition": "OCR",
+        "roi": [500, 225, 280, 50],
+        "expected": "Rewards Acquired|Pass Level Up",
+        "action": "Custom",
+        "custom_action": "TapUntil",
+        "post_delay": 0,
+        "custom_action_param": {
+            "target": [575, 455, 130, 35],
+            "gone": {"roi": [500, 225, 280, 50], "expected": "Rewards Acquired|Pass Level Up"}
+        }
+    },
+    "MirrorEnterDialog": {
+        "recognition": "OCR",
+        "roi": [400, 325, 480, 45],
+        "expected": "Will you enter",
+        "action": "Custom",
+        "custom_action": "TapUntil",
+        "post_delay": 0,
+        // The entry page behind reads "Before Entry" until the run exists: leaving early plans the run twice.
+        "custom_action_param": {
+            "target": [650, 465, 220, 40],
+            "next": {"roi": [990, 140, 230, 35], "expected": "F\\s*\\d"}
+        }
+    },
+    "LevelWarning": {
+        "recognition": "OCR",
+        "roi": [400, 230, 480, 90],
+        "expected": "recommended level",
+        "action": "Custom",
+        "custom_action": "TapUntil",
+        "post_delay": 0,
+        "custom_action_param": {
+            "target": [665, 478, 200, 35],
+            "next": {"roi": [890, 30, 115, 28], "expected": "Available"},
+            "timeout": 4
+        }
+    },
+    "TeamSelect": {
+        "recognition": "OCR",
+        "roi": [80, 272, 100, 28],
+        "expected": "^TEAMS$",
+        "action": "Custom",
+        "custom_action": "SelectTeam",
+        "post_delay": 0
+    },
+    "StarlightPage": {
+        "recognition": "OCR",
+        "roi": [890, 30, 115, 28],
+        "expected": "Available",
+        "action": "Custom",
+        "custom_action": "BuyStarlight",
+        "post_delay": 0
+    },
+    "StarlightConfirm": {
+        "recognition": "OCR",
+        "roi": [480, 210, 320, 35],
+        "expected": "Continue with selected effects",
+        "action": "Custom",
+        "custom_action": "ConfirmStarlight",
+        "post_delay": 0
+    },
+    // The Gift Search page has the same "Selected E.G.O Gift" header; only this page has the Activate Gift Search
+    // switch (ON or OFF). Live 2026-10-19 (#166): the search page fading in read as this page before its blue title
+    // could be read, and PickStartingGift tapped the search page.
+    "StartingGift": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "OCR",
+                "sub_name": "StartingGiftHeader",
+                "roi": [780, 145, 230, 35],
+                "expected": "Selected E"
+            },
+            {
+                "recognition": "OCR",
+                "sub_name": "StartingGiftSwitch",
+                "roi": [1040, 140, 80, 40],
+                "expected": "Activate"
+            }
+        ],
+        "action": "Custom",
+        "custom_action": "PickStartingGift",
+        "post_delay": 0
+    },
+    // Confirms each window, the next gift's once the screen is still, until none is left (GiftGet in run_start_actions.py).
+    "GiftGet": {
+        "recognition": "OCR",
+        "roi": [520, 160, 240, 40],
+        "expected": "Gift GET",
+        "action": "Custom",
+        "custom_action": "GiftGet",
+        "post_delay": 0
+    },
+    // Selects the team's gifts with owned Starlight, or presses Refuse Gift (spec 03 section 5).
+    "GiftSearch": {
+        "recognition": "OCR",
+        "roi": [140, 30, 220, 35],
+        "expected": "Gift Search",
+        "action": "Custom",
+        "custom_action": "GiftSearch",
+        "post_delay": 0
+    },
+    "GiftSearchForgo": {
+        "recognition": "OCR",
+        "roi": [480, 330, 320, 35],
+        "expected": "Forgo",
+        "action": "Custom",
+        "custom_action": "TapUntil",
+        "post_delay": 0,
+        // The dialog reads through its fade-out: leaving early, MirrorHub would confirm it twice.
+        "custom_action_param": {
+            "target": [665, 478, 200, 35],
+            "next": [
+                {"roi": [1060, 625, 190, 40], "expected": "NOW LOADING"},
+                {"roi": [480, 100, 320, 40], "expected": "THEME ?PACK"}
+            ],
+            "timeout": 2
+        }
+    },
+    "ThemePack": {
+        "recognition": "OCR",
+        "roi": [480, 100, 320, 40],
+        "expected": "THEME ?PACK",
+        "action": "Custom",
+        "custom_action": "PickThemePack",
+        "post_delay": 0
+    },
+    // The free refresh button's count "n/3" (#319): spent (0); unread or some left: no hit. With one free refresh the
+    // button shows no count, only greys (#482): PickThemePack reads that by its brightness (refresh_lit).
+    "PackRefreshSpent": {"recognition": "OCR", "roi": [1105, 32, 60, 30], "expected": "^0 ?/ ?\\d"},
+    // Rewards and events (spec 03 sections 10-12). The bot never cancels a reward or refuses a gift;
+    // landing in either dialog anyway, it backs out with Cancel.
+    "RewardCardForgo": {
+        "recognition": "OCR",
+        "roi": [440, 320, 400, 35],
+        "expected": "Continue without choosing",
+        "action": "Custom",
+        "custom_action": "TapUntil",
+        "post_delay": 0,
+        "custom_action_param": {
+            "target": [455, 448, 165, 37],
+            "gone": {"roi": [440, 320, 400, 35], "expected": "Continue without choosing"}
+        }
+    },
+    // Select with picks left; Confirm would hand out random trials (1.117.0, also after a NORMAL boss).
+    "GiftRefuseDialog": {
+        "recognition": "OCR",
+        "roi": [440, 280, 400, 35],
+        "expected": "remaining E.G.O Gift choices",
+        "action": "Custom",
+        "custom_action": "TapUntil",
+        "post_delay": 0,
+        "custom_action_param": {
+            "target": [415, 476, 200, 35],
+            "gone": {"roi": [440, 280, 400, 35], "expected": "remaining E.G.O Gift choices"}
+        }
+    },
+    // No delays (#258): RewardCard reads the cards once they stand still (still()), and returns once the title is gone or
+    // a GET! window is up, which GiftGet, before it in HubText, takes with its own pre_delay.
+    "RewardCard": {
+        "recognition": "OCR",
+        "roi": [290, 112, 490, 48],
+        "expected": "Encounter Reward",
+        "action": "Custom",
+        "custom_action": "RewardCard",
+        "pre_delay": 0,
+        "post_delay": 0
+    },
+    // After a fight, an event or a boss (with Mounting Trials); the starting gift page is matched before.
+    // pre_delay 200 (#258): PickGift reads the cards on its first screenshot, with no still(); the page fading in would
+    // miss a card. post_delay 0: it returns once Refuse Gift no longer reads, and the GET! window that follows (21 of 21
+    // live hits) is GiftGet's, whose own pre_delay waits for it.
+    "GiftChoice": {
+        "recognition": "OCR",
+        "roi": [870, 560, 160, 40],
+        "expected": "Refuse Gift",
+        "action": "Custom",
+        "custom_action": "PickGift",
+        "pre_delay": 200,
+        "post_delay": 0
+    },
+    // Shop and Super Shop (spec 03 section 13): the Leave button, also under the shop's own dialogs and pages; or ID Skill
+    // Search's select mode (#456), where Leave reads Return: its title, so a hand-back there comes to Shop, whose to_main
+    // leaves by Return, and page_guard holds while the step picks a sinner (tests/screens/ShopIdSkillSearchSelect.png).
+    // Shop heals, replaces skills, then sells, buys, refreshes and fuses in rounds, and leaves.
+    // pre_delay 200 (#258): the visit reads the Cost and the sinner bar as soon as the Refresh fee reads (to_main), with no
+    // still(). post_delay 0: it returns once the map shows (Leave's Confirm), and RouteMap starts with still().
+    "Shop": {
+        "recognition": "Or",
+        "any_of": [
+            {
+                "recognition": "OCR",
+                "sub_name": "ShopLeave",
+                "roi": [1040, 615, 180, 65],
+                "expected": "^Leave$"
+            },
+            {
+                "recognition": "OCR",
+                "sub_name": "ShopSelectSinner",
+                "roi": [430, 15, 420, 35],
+                "expected": "Select a Sinner for Skill"
+            }
+        ],
+        "action": "Custom",
+        "custom_action": "Shop",
+        "pre_delay": 200,
+        "post_delay": 0
+    },
+    // The red button bottom right reads SKIP, Proceed, Continue or Commence, grey while it does nothing.
+    // No delays (#273): the action starts with still(). After a taken option (once the Choices page goes) or a press,
+    // it presses the next lit button itself, on a screen held still (#557).
+    "Event": {
+        "recognition": "OCR",
+        "roi": [1040, 612, 190, 66],
+        "expected": "SKIP|Proceed|Continue|Commence",
+        "action": "Custom",
+        "custom_action": "Event",
+        "pre_delay": 0,
+        "post_delay": 0
+    },
+    // The Dungeon Progress panel (the gear, or the back key on the map or an event): Continue closes it, never Forfeit
+    // (gives the run up) or To Window. Over the map, whose icons still show, or an event, whose button still reads:
+    // before every page, in HubText's entries (#215).
+    "ProgressPanel": {
+        "recognition": "OCR",
+        "roi": [600, 440, 80, 35],
+        "expected": "^Continue$",
+        "action": "Custom",
+        "custom_action": "TapUntil",
+        "post_delay": 0,
+        "custom_action_param": {
+            "target": [600, 440, 80, 35],
+            "gone": {"roi": [600, 440, 80, 35], "expected": "^Continue$"}
+        }
+    },
+    // Node selection panel: right-hand Enter. Before MirrorMap: the panel hides part of its icons.
+    // pre_delay 200 (#258): enter_node taps Enter on its first look, with no still(), and the panel slides in. post_delay 0:
+    // it returns once the panel is gone and the map has faded, as MirrorMap's enter_node does.
+    "MapNodePanel": {
+        "recognition": "TemplateMatch",
+        "roi": [1030, 495, 210, 95],
+        "template": "Map/MapNodePanel.png",
+        "threshold": 0.8,
+        "action": "Custom",
+        "custom_action": "EnterNode",
+        "pre_delay": 200,
+        "post_delay": 0
+    },
+    // Right-hand icon column (pack detail, team); the Exploring Floor title is often covered.
+    // RouteMap picks and enters the next node, or forfeits the run after a wipe's Accept results.
+    // No delays (#258): RouteMap starts with still(), which returns to the hub while the map fades (1 of 205 live hits with
+    // the 200 ms pre_delay; 2 more handed back at once under a GET! window), and enter_node waits for the map to fade out.
+    // The forfeit path (the run's end) taps the gear with no still() first, as before: it checks its dialog and tries 3 times.
+    "MirrorMap": {
+        "recognition": "TemplateMatch",
+        "roi": [1195, 65, 75, 130],
+        "template": "Map/MirrorMap.png",
+        "threshold": 0.8,
+        "action": "Custom",
+        "custom_action": "RouteMap",
+        "pre_delay": 0,
+        "post_delay": 0
+    },
+    // Battle (spec 03 sections 3, 8, 9). The DEFEAT dialog sits over the battle: first.
+    "WipeDialog": {
+        "recognition": "OCR",
+        "roi": [330, 360, 270, 50],
+        "expected": "All participating",
+        "action": "Custom",
+        "custom_action": "Wipe"
+    },
+    "Victory": {
+        "recognition": "OCR",
+        "roi": [420, 280, 440, 140],
+        "expected": "VICTORY",
+        "action": "Custom",
+        "custom_action": "Victory",
+        "pre_delay": 0,
+        "post_delay": 0
+    },
+    "Formation": {
+        "recognition": "OCR",
+        "roi": [1065, 465, 160, 30],
+        "expected": "Clear Selection",
+        "action": "Custom",
+        "custom_action": "Formation"
+    },
+    // The pause menu behind the top-right gear (#215, live 2026-10-22, tests/screens/BattleMenu.png): Settings / Resume /
+    // Retry Stage / Give Up, over the turn, whose Win Rate label still reads (a tap there only closed it by chance).
+    // Resume closes it. The roi is the Resume bar alone, so the tap can land on no other button; Give Up and Retry
+    // Stage end the stage. A template, as the popups before it: BattleHUD runs it on every battle round. The menu fades
+    // out for a moment and its template still hits then (BattleMenuClosing.png): TapUntil waits for the bar's text to go
+    // (#254) where a Click waited a fixed 1 s. The arrow before the text rules out an anchored pattern.
+    "BattleMenu": {
+        "recognition": "TemplateMatch",
+        "roi": [505, 296, 270, 41],
+        "template": "Battle/BattleMenuResume.png",
+        "threshold": 0.8,
+        "action": "Custom",
+        "custom_action": "TapUntil",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "custom_action_param": {
+            "target": [505, 296, 270, 41],
+            "gone": {"roi": [505, 296, 270, 41], "expected": "Resume"}
+        }
+    },
+    // The same menu in a Luxcavation battle (live 2026-10-27, tests/screens/LuxBattleMenu.png): Settings / Resume / Give Up,
+    // no Retry Stage, so Resume sits one bar lower. Give Up has no confirm dialog: one tap ends the battle a defeat.
+    "LuxBattleMenu": {
+        "recognition": "TemplateMatch",
+        "roi": [505, 323, 270, 42],
+        "template": "Battle/BattleMenuResume.png",
+        "threshold": 0.8,
+        "action": "Custom",
+        "custom_action": "TapUntil",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "custom_action_param": {
+            "target": [505, 323, 270, 42],
+            "gone": {"roi": [505, 323, 270, 42], "expected": "Resume"}
+        }
+    },
+    // A sinner's E.G.O card over the turn (#468, live 2026-11-07, tests/screens/LuxBattleEgoCard.png, BattleEgoCard.png):
+    // a long press (2.5 s) on a portrait opens it, the whole battle dimmed, the card in the middle (Details, To Corrode,
+    // the 7 sin costs), the sinner's Resistances bar below. The card's frame takes the E.G.O's colour; its Details and the
+    // bar's Resistances stay put (two sinners, two colours, the same place). A sinner with more E.G.O shows a card each in
+    // a row: three with the middle one where a single card sits (LuxBattleEgoCards.png), two side by side with none there
+    // (BattleEgoCardsTwo.png, Details 0.96 at x 518): the Details roi spans the row. The back key leaves it up; a tap
+    // anywhere off the card closes it (#468: the dimmed field, the bar, the dim above the card, within 0.1 s). A tap at
+    // (1, 1) closed it within 0.35 s each of the 9 times a screenshot followed (one card 5, two cards 4; the bot frozen
+    // mid-hold, its own finger maybe down there), and with the bot running it closed one card and two, the screen
+    // changed 0.3 s after the tap (#469). The tap goes there, hold_turn's HOLD_SPOT, which no battle screen has a
+    // button on. Before BattleTurn and BattlePause: it hides the HUD they look for.
+    "EgoCard": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "TemplateMatch",
+                "sub_name": "EgoCardDetails",
+                "roi": [200, 115, 880, 70],
+                "template": "Battle/EgoCardDetails.png",
+                "threshold": 0.9
+            },
+            {
+                "recognition": "TemplateMatch",
+                "sub_name": "EgoCardResistances",
+                "roi": [250, 530, 170, 60],
+                "template": "Battle/EgoCardResistances.png",
+                "threshold": 0.9
+            }
+        ],
+        "action": "Custom",
+        "custom_action": "TapUntil",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "custom_action_param": {
+            "target": [1, 1, 1, 1],
+            "left": true
+        }
+    },
+    // Waiting for input: the Win Rate label, off or on. It moves half a slot (~40 px) right with every
+    // extra skill slot: x 984 with 7 slots, ~740 with 1 (a 1-sinner formation, live 2026-10-16).
+    // No pre_delay (#177): PlayTurn starts with still(), which takes a screenshot at once and goes on only once another
+    // 0.2 s later reads alike, so a 200 ms pre_delay slept back to back with that 0.2 s. post_delay stays at 200 ms
+    // (#258): the action is 7.4 s (hold_turn lifts the finger after HOLD_LIMIT, 6 s, and 223 of 232 live hits are
+    // followed by BattlePause, which holds again), and no log shows what a look 0.2 s sooner finds: the 3 hits followed
+    // by BattleTurn again would be a second submit of the same turn, a second tap on Win Rate.
+    "BattleTurn": {
+        "recognition": "TemplateMatch",
+        "roi": [700, 515, 580, 60],
+        "template": [
+            "Battle/BattleTurn.png",
+            "Battle/BattleTurnPressed.png"
+        ],
+        "threshold": 0.8,
+        "action": "Custom",
+        "custom_action": "PlayTurn",
+        "pre_delay": 0,
+        "post_delay": 200
+    },
+    // A turn playing out: the pause button replaces the top-right controls. PlayTurn holds a finger down
+    // through the turn it started (#150); this holds it again after a hold timed out, a recovery or a restart.
+    "BattlePause": {
+        "recognition": "TemplateMatch",
+        "roi": [1130, 5, 100, 75],
+        "template": "Battle/BattlePause.png",
+        "threshold": 0.8,
+        "action": "Custom",
+        "custom_action": "HoldTurn",
+        "pre_delay": 0,
+        "post_delay": 0
+    },
+    // The START plaque over the disc: every slot has a skill (#145). The agent sets the roi from the disc.
+    "BattleStart": {
+        "recognition": "TemplateMatch",
+        "roi": [870, 480, 140, 60],
+        "template": "Battle/BattleStart.png",
+        "threshold": 0.5
+    },
+    // After the floor 5 boss (live 1.117.0); the run's counterpart of DefeatScreen.
+    "RunVictory": {
+        "recognition": "OCR",
+        "roi": [990, 100, 200, 70],
+        "expected": "^Victory$",
+        "action": "Custom",
+        "custom_action": "TapUntil",
+        "post_delay": 0,
+        "custom_action_param": {
+            "target": [1050, 550, 150, 45],
+            "gone": {"roi": [990, 100, 200, 70], "expected": "^Victory$"}
+        }
+    },
+    // After a forfeit (captures/244, 245); Claim Rewards only opens the Exploration Reward window.
+    "DefeatScreen": {
+        "recognition": "OCR",
+        "roi": [1000, 135, 200, 70],
+        "expected": "^Defeat$",
+        "action": "Custom",
+        "custom_action": "TapUntil",
+        "post_delay": 0,
+        "custom_action_param": {
+            "target": [1052, 548, 150, 40],
+            "gone": {"roi": [1000, 135, 200, 70], "expected": "^Defeat$"}
+        }
+    },
+    "ExplorationComplete": {
+        "recognition": "OCR",
+        "roi": [130, 90, 210, 70],
+        "expected": "Complete",
+        "action": "Custom",
+        "custom_action": "TapUntil",
+        "post_delay": 0,
+        "custom_action_param": {
+            "target": [1060, 575, 150, 45],
+            "next": {"roi": [500, 100, 280, 45], "expected": "Exploration Reward"},
+            "gone": {"roi": [130, 90, 210, 70], "expected": "Complete"}
+        }
+    }
+}

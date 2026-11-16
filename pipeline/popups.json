@@ -1,0 +1,422 @@
+{
+    // Global popups (spec 01, 全域彈窗): first in MirrorHub's next.
+    // Not built yet, no screenshot of them so far: a tutorial that opens by itself (HelpPager is the one an "i" opens),
+    // a weekly reset notice (none showed at the 2026-11-12 reset), the "?" effect-choice page (#87), level-up popups
+    // other than Pass Level Up (ClaimPopup). The "previous session has expired" dialog has its node
+    // (PreviousSessionExpired, below). PopupButton presses
+    // any lone Close / Confirm / OK meanwhile; Recover saves a screen MirrorHub does not know to logs/unknown/.
+    // Connecting, RetryPopup and PopupButton run before the turn on every battle round (BattleHUD), so each starts with a
+    // template and reads no text on a battle screen, for speed (#157; spec 01, MirrorHub, has the live numbers). RetryPopup
+    // and PopupButton read their button text only once the left end of a popup button is in their roi:
+    // Screen/DialogButton.png, the dark gold-edged one of MaintenanceNotice.png and RewardsAcquired.png, also on
+    // the live server error and network popups (ServerErrorRetry.png, NetworkUnstable.png); for PopupButton also
+    // Screen/DialogButtonParchment.png, the light parchment one of "You haven't Deployed any Sinners."
+    // (FormationNoSinners.png), which DialogButton.png scores 0.38 on.
+    // Connecting has nothing to press: the hub looks again at its own pace (the rate_limit of every hub that lists it),
+    // not 1.2 s later (#258). A hit skips the rate_limit, so 0 here would take a screenshot as fast as a pass runs.
+    "Connecting": {
+        "recognition": "TemplateMatch",
+        "roi": [995, 45, 250, 60],
+        "template": "Screen/Connecting.png",
+        "green_mask": true,
+        "threshold": 0.8,
+        "pre_delay": 0,
+        "post_delay": 300
+    },
+    // Unverified layout: a "Retry" button, also with a countdown ("Retry (5)"), or "Try Again", anywhere
+    // mid-screen (#84). Not the DEFEAT dialog's Retry Stage. Its 2 s stay (#258): no live log has one to time the screen
+    // after it against, and a retry only reconnects (Connecting waits on that), where pacing the taps does no harm.
+    "RetryPopup": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "TemplateMatch",
+                "sub_name": "RetryPopupButton",
+                "roi": [340, 380, 600, 180],
+                "template": "Screen/DialogButton.png",
+                "threshold": 0.8
+            },
+            {
+                "recognition": "OCR",
+                "sub_name": "RetryPopupText",
+                "roi": [340, 380, 600, 180],
+                "expected": "^(Retry(?!\\s*Stage)|Try Again)"
+            }
+        ],
+        "box_index": 1,
+        "action": "Custom",
+        "custom_action": "DismissShot",
+        "post_delay": 2000
+    },
+    // Every inline OCR has its own sub_name: MaaFramework OCRs a next list's OCR in one pass and files the boxes by
+    // name, and the default name "OCR" pooled all six here into one 7 GB, 1.5 s re-read (#149).
+    // The notice window over the title (live 2026-10-15, tests/screens/MaintenanceNotice.png): "maintenance"
+    // in its message and its one Close button; the word elsewhere (event text, gift tooltips) is no notice (#83).
+    "MaintenanceNotice": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "OCR",
+                "sub_name": "MaintenanceNoticeText",
+                "roi": [350, 230, 580, 200],
+                "expected": "(?i)maintenance"
+            },
+            {
+                "recognition": "OCR",
+                "sub_name": "MaintenanceNoticeClose",
+                "roi": [550, 445, 175, 45],
+                "expected": "^Close$"
+            }
+        ],
+        "action": "Custom",
+        "custom_action": "Halt",
+        "custom_action_param": "maintenance notice"
+    },
+    // The client too old for the server (live 2026-10-22 over the title, tests/screens/TitleClientOutdated.png): "Game
+    // client is not up to date. Please update to the latest version.", Close / Go to Store. Close brings it back, the
+    // store's update is not the bot's (#86): stop, the webhook says why. Before DownloadDialog and PopupButton.
+    "ClientOutdated": {
+        "recognition": "OCR",
+        "roi": [350, 230, 580, 200],
+        "expected": "(?i)client is not up to date",
+        "action": "Custom",
+        "custom_action": "Halt",
+        "custom_action_param": "the game client is out of date: update it from the Play Store, then start the bot again"
+    },
+    // The game's own update notices mid-run (strings of the client, EN_MainUIText; no capture, so both ROIs are wide):
+    // "A new download has been added. The game will be closed ..." / "... Returning to the title screen." and
+    // "Version update available. Please download new resources and try again.". Before PopupButton, which would press
+    // their one button and leave the bot on a closed game. AcceptUpdate presses it (run.auto_download, else stops) and
+    // restarts the game (RecoverL3); the title's download dialog follows.
+    "UpdateDialog": {
+        "recognition": "And",
+        "all_of": [
+            // A template first, as RetryPopup: BattleHUD runs it on every battle round (#157).
+            {
+                "recognition": "TemplateMatch",
+                "sub_name": "UpdateDialogFrame",
+                "roi": [340, 380, 600, 180],
+                "template": "Screen/DialogButton.png",
+                "threshold": 0.8
+            },
+            {
+                "recognition": "OCR",
+                "sub_name": "UpdateDialogText",
+                "roi": [350, 230, 580, 200],
+                "expected": "(?i)new download has been added|Version update available"
+            },
+            {
+                "recognition": "OCR",
+                "sub_name": "UpdateDialogButton",
+                "roi": [340, 380, 600, 180],
+                "expected": "^(Close|Confirm|OK)$"
+            }
+        ],
+        "box_index": 2,
+        "action": "Custom",
+        "custom_action": "AcceptUpdate"
+    },
+    // The title's User Agreement (live 2026-10-21, a new account: tests/screens/UserAgreement.png): two "I agree."
+    // boxes, Confirm lit once both are ticked. AcceptTerms ticks them (run.auto_accept_terms, else stops).
+    "UserAgreement": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "OCR",
+                "sub_name": "UserAgreementTitle",
+                "roi": [500, 100, 280, 45],
+                "expected": "^User Agreement$"
+            },
+            {
+                "recognition": "OCR",
+                "sub_name": "UserAgreementAgree",
+                "roi": [360, 445, 100, 32],
+                "expected": "agree"
+            }
+        ],
+        "action": "Custom",
+        "custom_action": "AcceptTerms"
+    },
+    // The title's data download dialog (live 2026-10-16: `Downloading N MB of data`, Close / Confirm; seen after a
+    // game restart, no capture, so both ROIs are wide). Confirm and let the download run: the Agent holds the stuck
+    // detection until its progress screen (Downloading) is up (#86). Before GoToMirrorEntry in MirrorHub:
+    // the title reads through the dialog. Its 2 s stay (#258): in both live downloads it read again after its first
+    // Confirm and 2 s, so a shorter wait would only press it again sooner; it comes once a game update.
+    "DownloadDialog": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "OCR",
+                "sub_name": "DownloadDialogConfirm",
+                "roi": [345, 410, 580, 100],
+                "expected": "^Confirm$"
+            },
+            {
+                "recognition": "OCR",
+                "sub_name": "DownloadDialogText",
+                "roi": [350, 230, 580, 200],
+                "expected": "(?i)download|update|\\d\\s*[KMG]B"
+            }
+        ],
+        "action": "Custom",
+        "custom_action": "ConfirmDownload",
+        "post_delay": 2000
+    },
+    // After clearing floor 5 (or 10) with the Parallel Superposition Mode engaged: `Enter the Parallel Superposition
+    // Mode and proceed to the next floor?` (EXTREME at floor 10), Cancel / Confirm. The bot does not go on into it:
+    // Cancel (spec 01, 無限鏡牢彈窗; AALC closes it too). Seen only as the game's help-sheet picture of the prompt
+    // (tests/screens/ParallelModePrompt.png), so its place on screen is not confirmed: both ROIs are wide and
+    // the click goes to the Cancel text found. It covers the page under it, so it sits before the pages. Its 1.5 s stay
+    // (#258): ParallelModeOff turns the mode off before each run, so no live log has the prompt to time a change against.
+    "ParallelModePrompt": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "OCR",
+                "sub_name": "ParallelModePromptCancel",
+                "roi": [400, 420, 480, 65],
+                "expected": "Cancel$"
+            },
+            {
+                "recognition": "OCR",
+                "sub_name": "ParallelModePromptText",
+                "roi": [400, 285, 480, 60],
+                "expected": "(?i)You can enter the .*Mode"
+            }
+        ],
+        "action": "Custom",
+        "custom_action": "DismissShot",
+        "post_delay": 1500
+    },
+    // The server's and the client's own popups, which any page can show: the first entries of every hub's HubText node
+    // (MirrorHub's HubText, GoHome's HomeText, ClaimMail's MailText), which name it as their base. Read in one pass
+    // (hub_text.py, #157) like them.
+    "ServerPopups": {
+        "recognition": "Custom",
+        "custom_recognition": "HubText",
+        "custom_recognition_param": {
+            "entries": [
+                "RetryPopup",
+                "MaintenanceNotice",
+                "ClientOutdated",
+                "UpdateDialog",
+                "UserAgreement",
+                "DownloadDialog",
+                "Downloading",
+                "Loading"
+            ],
+            "tail": []
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "timeout": 0
+    },
+    // A popup with one button in the middle (a server or network error on the title, an acknowledgement over a
+    // page): nothing to decide, press it (#86, #85). Two-button dialogs keep their buttons apart, so a Cancel /
+    // Confirm question is never answered here. The maintenance notice, also a lone Close, halts first.
+    // Its 1.5 s stay (#258): its 4 live closes (the Mailbox's Parcel Received) went back to the box, where MailClaimAll
+    // reads the dimmed Claim All under the popup and MailEmpty does not (MailParcelReceived.png): a look while it fades
+    // could press Claim All again.
+    "PopupButton": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "Or",
+                "any_of": [
+                    {
+                        "recognition": "TemplateMatch",
+                        "sub_name": "PopupButtonFrame",
+                        "roi": [500, 415, 220, 100],
+                        "template": "Screen/DialogButton.png",
+                        "threshold": 0.8
+                    },
+                    // Parchment: 1.00 on the 18 captures of it, at most 0.65 on 16,600 others (robustness corpus);
+                    // the roi hugs the button's left end, a 120x80 one reached 0.80 on ResumeDialog's buttons.
+                    {
+                        "recognition": "TemplateMatch",
+                        "sub_name": "PopupButtonParchment",
+                        "roi": [470, 456, 68, 84],
+                        "template": "Screen/DialogButtonParchment.png",
+                        "threshold": 0.9
+                    }
+                ]
+            },
+            {
+                "recognition": "OCR",
+                "sub_name": "PopupButtonText",
+                "roi": [540, 430, 200, 90],
+                "expected": "^(Close|Confirm|OK)$"
+            }
+        ],
+        "box_index": 1,
+        "action": "Custom",
+        "custom_action": "DismissShot",
+        "post_delay": 1500
+    },
+    // The main window's own popups (#85, live 2026-10-21 on 1.117.x, tests/screens/EventNotices.png, SystemNotices.png,
+    // Mailbox.png, SettingsMenu.png). The bot never opens them; a stray tap or a login can. Each is closed the way that
+    // leaves the account as it was: the notices by the back key, the Mailbox by its Close (never Claim All, next to
+    // it), the menu behind the top-right gear by Return (Quit Game, under it, quits with no confirm dialog).
+    // The notices and the Mailbox dim the tab bar: HomeReached scores at most 0.67 on the 5 captures of them
+    // (EventNotices, SystemNotices, Mailbox, MailboxEmpty, MailParcelReceived; maatools.config.mts holds it to a miss)
+    // and 1.0 on the main window's 3. Closed, they hand back once HomeReached hits and they no longer read, looked for
+    // every 0.2 s up to the 1.5 s they used to sleep (#258; live, the main window was up at the first look after each of
+    // 5 Mailbox closes; no live log has the notices). The menu leaves the Window tab lit, so its 1.5 s stay: only its
+    // own text tells it gone, and that may stop reading while it still fades.
+    // The expired-run dialog is also titled "Notifs" and has Notices' roi: PreviousSessionExpired reads its body and
+    // sits before Notices in HubText, so Notices' back key (Cancel there) never answers it. Notices stays the answer
+    // for every other "Notifs" screen. Lists that reach Notices: MirrorHub's HubText gets the new node (the dialog shows
+    // on the entry page, and ExplorationReward, which the Confirm opens, is in that list); GoHome's HomeText does not:
+    // it has no ExplorationReward to hand to, so a dialog met there is still closed by Notices' back key (Cancel), and
+    // the entry page offers the rewards later, as before. ServerPopups lists neither.
+    "Notices": {
+        "recognition": "OCR",
+        "roi": [480, 95, 330, 50],
+        "expected": "Notifs$",
+        "action": "Custom",
+        "custom_action": "DismissShot",
+        "custom_action_param": {
+            "back": true,
+            "until": "HomeReached",
+            "timeout": 1.5
+        },
+        "post_delay": 0
+    },
+    // "The previous session has expired. Please claim your rewards." over the Mirror Dungeon entry page, Cancel / Confirm
+    // (live 2026-11-12 05:02:51, 1.118.1, the first look at the entry page after the weekly reset with a run left
+    // unclaimed; tests/screens/PreviousSessionExpired.png). Titled "Notifs" like Notices, so it is told by its body and
+    // sits ahead of Notices in HubText (the back key would be Cancel). Confirm is meant to open the Exploration Reward
+    // window, which ExplorationReward hands to Settle: the user's decision 2026-11-12; that window after Confirm has
+    // no live frame yet (the capture only has the back key's Cancel). The tap repeats until the dialog is gone or the
+    // window reads (4 s, a second over TapUntil's 3 for the window to open): if it never opens, the hub finds the entry
+    // page with Unclaimed Rewards, as after Notices' back key (Cancel) used to.
+    // The box is Confirm's own word, which OCR reads at (718-817, 487-505); its centre is the tap.
+    "PreviousSessionExpired": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "OCR",
+                "sub_name": "ExpiredTitle",
+                "roi": [480, 95, 330, 50],
+                "expected": "Notifs$"
+            },
+            {
+                "recognition": "OCR",
+                "sub_name": "ExpiredBody",
+                "roi": [440, 320, 400, 60],
+                "expected": "previous session has expired"
+            },
+            {
+                "recognition": "OCR",
+                "sub_name": "ExpiredConfirm",
+                "roi": [662, 477, 208, 38],
+                "expected": "Confirm$"
+            }
+        ],
+        "box_index": 2,
+        "action": "Custom",
+        "custom_action": "TapUntil",
+        "post_delay": 0,
+        "custom_action_param": {
+            "next": {"roi": [500, 100, 280, 45], "expected": "Exploration Reward"},
+            "gone": {"roi": [440, 320, 400, 60], "expected": "previous session has expired"},
+            "timeout": 4
+        }
+    },
+    "Mailbox": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "OCR",
+                "sub_name": "MailboxTitle",
+                "roi": [500, 100, 280, 45],
+                "expected": "^Mailbox$"
+            },
+            {
+                "recognition": "OCR",
+                "sub_name": "MailboxClose",
+                "roi": [690, 530, 175, 45],
+                "expected": "^Close$"
+            }
+        ],
+        "box_index": 1,
+        "action": "Custom",
+        "custom_action": "DismissShot",
+        "custom_action_param": {
+            "until": "HomeReached",
+            "timeout": 1.5
+        },
+        "post_delay": 0
+    },
+    "SettingsMenu": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "OCR",
+                "sub_name": "SettingsMenuTitle",
+                "roi": [500, 100, 280, 45],
+                "expected": "^Settings$"
+            },
+            {
+                "recognition": "OCR",
+                "sub_name": "SettingsMenuReturn",
+                "roi": [500, 370, 280, 45],
+                "expected": "Return$"
+            }
+        ],
+        "box_index": 1,
+        "action": "Custom",
+        "custom_action": "DismissShot",
+        "post_delay": 1500
+    },
+    // The help pager behind every "i" button (#85, live 2026-10-21: Mirror Dungeon 34 pages, Refraction Railway 18,
+    // Sinners 17, Extract 4, Dispense 5; tests/screens/HelpPager*.png). Its title changes with the page, so it is found
+    // by its frame: the back button at the top left and the page dots along the bottom. The back button alone also
+    // scores 0.98 on the entry page's own back button (EntryPaused.png); the dots are what tell the pager apart. The back key closes it; the
+    // arrow at the right only turns the page. Page 1 of the Mirror Dungeon one is a picture of the entry page, so it
+    // sits in MirrorHub before HubText. Its 1.5 s stay (#258): no live log has the pager to time its close against.
+    "HelpPager": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "TemplateMatch",
+                "sub_name": "HelpPagerBack",
+                "roi": [40, 10, 110, 75],
+                "template": "Screen/HelpPagerBack.png",
+                "threshold": 0.8
+            },
+            {
+                "recognition": "TemplateMatch",
+                "sub_name": "HelpPagerDot",
+                "roi": [250, 595, 780, 40],
+                "template": "Screen/HelpPagerDot.png",
+                "threshold": 0.8
+            }
+        ],
+        "action": "Custom",
+        "custom_action": "DismissShot",
+        "custom_action_param": {
+            "back": true
+        },
+        "post_delay": 1500
+    },
+    // The download after the title's dialog (live 2026-10-21, 17.77 GB): DOWNLOADING UPDATE n% 0/1, then DOWNLOADING
+    // RESOURCES n% k/1741, ~32 min in all, NOW LOADING... beside it. A waiting screen: stuck only once it stops moving.
+    // Its 1 s stays (#258): its end is seen at most 1.2 s late once a download, and at the hub's pace a 30 min wait
+    // would take four times the passes and the log.
+    "Downloading": {
+        "recognition": "OCR",
+        "roi": [40, 600, 440, 36],
+        "expected": "DOWNLOADING (UPDATE|RESOURCES)",
+        "post_delay": 1000
+    },
+    "Loading": {
+        "recognition": "OCR",
+        "roi": [1060, 625, 190, 40],
+        "expected": "NOW LOADING",
+        // HubText's OCR pass paces the looks: a hit skips the hub's rate_limit (hit again every 0.15-0.32 s on
+        // 2026-10-29). A delay here only saw the next screen late (#115).
+        "pre_delay": 0,
+        "post_delay": 0
+    }
+}
