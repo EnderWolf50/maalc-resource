@@ -1,8 +1,8 @@
 {
- "version": "2026.11.20",
+ "version": "2026.11.20.2",
  "client": "1.119.0",
- "format": 1,
- "template": 4,
+ "format": 2,
+ "template": 5,
  "sources": [
   "https://raw.githubusercontent.com/EnderWolf50/maalc-resource"
  ],
@@ -2644,8 +2644,8 @@
    "sha256": "2b218d175931c9afec02e3f0202743a198f2d2d2c0dd2b124beb57e042bf8541"
   },
   "data/map_weights.yaml": {
-   "size": 1313,
-   "sha256": "093739aa7dd0a56eeae9b4a6bc688b068110642bb10513e34761305582296af7"
+   "size": 1954,
+   "sha256": "882e38cf2309089a99ef1be1d274d9c1634ed0234d461c74c5cbec92d0d9bd93"
   },
   "data/shop.yaml": {
    "size": 2126,
@@ -5416,8 +5416,8 @@
    "sha256": "eef6850f3c370584ee56f9352f12a9fe4942b3c3862d068f3e97c2a1a742f285"
   },
   "pipeline/mirror_dungeon.json": {
-   "size": 29509,
-   "sha256": "a9a40e6819d38d637ee48d98710e2954db62bac325ad30496632d9b38b1e3e0e"
+   "size": 31569,
+   "sha256": "8dee1bb6a2f28beb063eddca7e10af6a2378d9f774152576de0d74fdc2e1e6ed"
   },
   "pipeline/navigation.json": {
    "size": 11137,
@@ -5428,8 +5428,8 @@
    "sha256": "7a88fb1e3e53e4cd0bfebef60d3ee556e201be1b7d8633e8fe3d3d1a2507cc69"
   },
   "pipeline/popups.json": {
-   "size": 20247,
-   "sha256": "37e886d26ce8021653a473dd489615a0b6175b119a3448fc860addef5bf7589e"
+   "size": 23410,
+   "sha256": "e3c4b4cf7c19386223e6454d4a6a773488e2b193aeaa9d749592dab1b34e0dc8"
   },
   "pipeline/recovery.json": {
    "size": 4724,
