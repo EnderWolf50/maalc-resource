@@ -1,8 +1,8 @@
 {
- "version": "2026.11.18",
+ "version": "2026.11.20",
  "client": "1.119.0",
  "format": 1,
- "template": 3,
+ "template": 4,
  "sources": [
   "https://raw.githubusercontent.com/EnderWolf50/maalc-resource"
  ],
@@ -5279,6 +5279,10 @@
    "size": 3946,
    "sha256": "10e4493a33ac51a15bf5d3eba5903bec2fb6098245ac5e0be9906ad35cc6e1a4"
   },
+  "image/Map/MapNodeShopIconFlame.png": {
+   "size": 1576,
+   "sha256": "6ea0e5350e89f486be3de759ab1996831be4d14e0ba326c897a56d45a7e60777"
+  },
   "image/Map/MapNodeShopIconPlus.png": {
    "size": 1859,
    "sha256": "ea651b4421e5bc6fc63f661bd566d76661ed0cecf693b7b26ffb678ce40f7371"
@@ -5408,8 +5412,8 @@
    "sha256": "b07150e4d9d2d9ad59a5b5d31d728d859b0cea45904d4331b3905f80d54b9c18"
   },
   "pipeline/map.json": {
-   "size": 6113,
-   "sha256": "b7dec3a31287c9411d55728479fd1b53f37ad2537ed1a11e8757137e2cd4f04d"
+   "size": 6803,
+   "sha256": "eef6850f3c370584ee56f9352f12a9fe4942b3c3862d068f3e97c2a1a742f285"
   },
   "pipeline/mirror_dungeon.json": {
    "size": 29509,
