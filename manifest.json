@@ -1,5 +1,5 @@
 {
- "version": "2026.11.21",
+ "version": "2026.11.21.2",
  "client": "1.119.0",
  "format": 2,
  "template": 5,
@@ -5307,9 +5307,17 @@
    "size": 7153,
    "sha256": "cb8f21d6414f2ee992195574be3daca89cbb36c4c96e73b89724ab2e9243ff83"
   },
+  "image/Navigation/NavDriveWalpurgis.png": {
+   "size": 24816,
+   "sha256": "f2a110ff3343d53b1c616a12fd18ff1eca6164ad671f9e792b96cd5e9c15f880"
+  },
   "image/Navigation/NavLuxcavation.png": {
    "size": 34195,
    "sha256": "5def05bae731f20ec33f9052a7fbba1ce7923e4fb712a922753c955de0922b2f"
+  },
+  "image/Navigation/NavLuxcavationWalpurgis.png": {
+   "size": 22801,
+   "sha256": "ce29b468a874356b07bf9a13f24a7a6f7a9a0c3f309114c2b593a833b32ce72f"
   },
   "image/Navigation/NavMainTabs.png": {
    "size": 5525,
@@ -5404,8 +5412,8 @@
    "sha256": "5865a5f3c5f88963410bb55c4b379e967369f1a35e0b8ba23efe6b850c78ac27"
   },
   "pipeline/luxcavation.json": {
-   "size": 17655,
-   "sha256": "73584c179fb60d513f95e7b836166a2fb8d61d7d1937ffe7f0f429420851d7e6"
+   "size": 17986,
+   "sha256": "dc6fd01ed28726e96521332c326331d8f097d4a6d74fc69388ceca9830dd35ef"
   },
   "pipeline/mail.json": {
    "size": 4888,
@@ -5420,8 +5428,8 @@
    "sha256": "8dee1bb6a2f28beb063eddca7e10af6a2378d9f774152576de0d74fdc2e1e6ed"
   },
   "pipeline/navigation.json": {
-   "size": 11137,
-   "sha256": "9febcba828864d0e155fd441f13539560463712164a298be689e2b8b98b5239a"
+   "size": 11449,
+   "sha256": "20d4ffa4d32cd49531f885eef0f0a3fc8d278b05b70595f5a10200495201b41d"
   },
   "pipeline/pass_missions.json": {
    "size": 7611,
