@@ -1,5 +1,5 @@
 {
- "version": "2026.11.20.2",
+ "version": "2026.11.21",
  "client": "1.119.0",
  "format": 2,
  "template": 5,
@@ -2644,8 +2644,8 @@
    "sha256": "2b218d175931c9afec02e3f0202743a198f2d2d2c0dd2b124beb57e042bf8541"
   },
   "data/map_weights.yaml": {
-   "size": 1954,
-   "sha256": "882e38cf2309089a99ef1be1d274d9c1634ed0234d461c74c5cbec92d0d9bd93"
+   "size": 1785,
+   "sha256": "8859dd35023f3ee6d7d6d389d4128ff08ce9549ed0a9350843ff5c2d94254910"
   },
   "data/shop.yaml": {
    "size": 2126,
