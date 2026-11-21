@@ -1,5 +1,5 @@
 {
- "version": "2026.11.21.2",
+ "version": "2026.11.21.3",
  "client": "1.119.0",
  "format": 2,
  "template": 5,
@@ -2644,8 +2644,8 @@
    "sha256": "2b218d175931c9afec02e3f0202743a198f2d2d2c0dd2b124beb57e042bf8541"
   },
   "data/map_weights.yaml": {
-   "size": 1785,
-   "sha256": "8859dd35023f3ee6d7d6d389d4128ff08ce9549ed0a9350843ff5c2d94254910"
+   "size": 1794,
+   "sha256": "03fadc5a3c41901f4a6dce4e7c893c3027885f2960d66cb3acb6423bf2f60722"
   },
   "data/shop.yaml": {
    "size": 2126,
@@ -5436,8 +5436,8 @@
    "sha256": "7a88fb1e3e53e4cd0bfebef60d3ee556e201be1b7d8633e8fe3d3d1a2507cc69"
   },
   "pipeline/popups.json": {
-   "size": 23410,
-   "sha256": "e3c4b4cf7c19386223e6454d4a6a773488e2b193aeaa9d749592dab1b34e0dc8"
+   "size": 23426,
+   "sha256": "bd0fe1acead0c03558205713ba2dae6ec3464f7000c6edc7b2636af191c5e6b6"
   },
   "pipeline/recovery.json": {
    "size": 4724,
