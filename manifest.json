@@ -1,5 +1,5 @@
 {
- "version": "2026.11.21.4",
+ "version": "2026.11.22",
  "client": "1.119.0",
  "format": 2,
  "template": 6,
@@ -5448,8 +5448,8 @@
    "sha256": "7a88fb1e3e53e4cd0bfebef60d3ee556e201be1b7d8633e8fe3d3d1a2507cc69"
   },
   "pipeline/popups.json": {
-   "size": 23426,
-   "sha256": "bd0fe1acead0c03558205713ba2dae6ec3464f7000c6edc7b2636af191c5e6b6"
+   "size": 23578,
+   "sha256": "fe4e0094a54dc060c23b97b48f40781aa4f1fb598ce22e2fe2afdc6f3256a60e"
   },
   "pipeline/recovery.json": {
    "size": 4724,
