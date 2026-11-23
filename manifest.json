@@ -1,7 +1,7 @@
 {
- "version": "2026.11.22",
+ "version": "2026.11.23",
  "client": "1.119.0",
- "format": 2,
+ "format": 3,
  "template": 6,
  "sources": [
   "https://raw.githubusercontent.com/EnderWolf50/maalc-resource"
@@ -552,16 +552,16 @@
    "sha256": "19ec2fc6ec660a455ce8b91211445e48137ceb12fbc608753fb7c6c787de48b6"
   },
   "data/event_text.json": {
-   "size": 378745,
-   "sha256": "36b9415b8a6ac745430c6171e9440cf5a383d6d1325aaf64e76a3b1e632bee12"
+   "size": 378783,
+   "sha256": "b664f45f1c463464b838377b6811609ca9e2392d5304fd272620e5e819141540"
   },
   "data/events.yaml": {
    "size": 183,
    "sha256": "baffb9c344acfea04333a0b49e7cacbd5d08db1ef4c58583fb3b6fe6eb25ee7d"
   },
   "data/gift_effects.json": {
-   "size": 414100,
-   "sha256": "81a6ae3f0e252ea79814b47f2bb020291c47d085a1273f2e96959b257745b56e"
+   "size": 414078,
+   "sha256": "adceb537d9ee9bfef731e1f4dd53099f95e89cb9e1d7b6c77562c248324ba2df"
   },
   "data/gift_icons/9001.webp": {
    "size": 4880,
@@ -2504,20 +2504,20 @@
    "sha256": "15c24def4cde4deab3ee1a0b71d3796b3ffea044bcb3af9c133403d0c9fa330e"
   },
   "data/gift_recipes.json": {
-   "size": 34737,
-   "sha256": "655367a9487e2a990df6faf3f5af0b039043183d749e1f825ad654c5394800dc"
+   "size": 34690,
+   "sha256": "f686b04f0d04ae863c4475373db3719090fa826198fb99ffd5d808c0a77c3810"
   },
   "data/gift_search.json": {
-   "size": 34643,
-   "sha256": "5af1cb93e79f2377b921c1e22ed2aecbd9313d9be6b65e82a7c6d5cd7ac399b1"
+   "size": 34596,
+   "sha256": "3bde93592ac0c0f71668d13dd1807d70cae3ae4c0e0e287e14300ce26cab84de"
   },
   "data/gift_slot/plate.png": {
    "size": 20117,
    "sha256": "03a548f2e4d6a0aa1f015abef15447c5082e57bc11694798c8b988b182ac396e"
   },
   "data/gift_text.json": {
-   "size": 690431,
-   "sha256": "195a7d9384ffc27496f68ecf5016103a17a3e663fbc6ef97f176692c78a00659"
+   "size": 690469,
+   "sha256": "8b650f8b1652004b35ed59c842c7345a09f7e4a1f7dd145b3c5bd679cdcddb66"
   },
   "data/grace_card/button-lit.webp": {
    "size": 2916,
@@ -2600,8 +2600,8 @@
    "sha256": "858cc1bb68dd59b8ffc97c693b85113a01453491ed34d65ab1ff9ee3a733379e"
   },
   "data/graces.json": {
-   "size": 25162,
-   "sha256": "ab116b1a5c3ba87d2bec9935cd81abf2f64c6ec2b50f0a22bb035f7f87b1fc0f"
+   "size": 25115,
+   "sha256": "39d10dae20d75b5e8f8c56c3d3214c893549e1a0ca9be7496cbee6d84501e808"
   },
   "data/keyword_icons/Bleed.webp": {
    "size": 2630,
@@ -3239,6 +3239,10 @@
    "size": 4374,
    "sha256": "47eac7c0969deac28fc520e99ec02929fb328d90c3f6ef55574a6b301d40846b"
   },
+  "data/theme_pack_names.json": {
+   "size": 8942,
+   "sha256": "0a72db1cfbc4000dd5da0c6836b6d45e772503f40fd909bb24472cc569751f66"
+  },
   "data/theme_pack_signatures.json": {
    "size": 130940,
    "sha256": "7a3cdabf48a42021174367e0cb8d129ee44e501368f4f07ccd073382f5a4e98a"
@@ -3248,8 +3252,8 @@
    "sha256": "9483f9084982d5d4b394a991e3db4eabcdbb69f897baccd8634071a09d9c3e20"
   },
   "data/trial_text.json": {
-   "size": 34690,
-   "sha256": "9514f137e566b26f7ae59af4c8c05c9afdeaf747625b70929d51662667564c14"
+   "size": 34728,
+   "sha256": "52705c804ec2d05034d527a3d346c2633a50d2b6110a26a0e8c379950d70e08b"
   },
   "data/trials.yaml": {
    "size": 12168,
