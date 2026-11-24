@@ -1,8 +1,8 @@
 {
- "version": "2026.11.23",
+ "version": "2026.11.24",
  "client": "1.119.0",
  "format": 3,
- "template": 6,
+ "template": 7,
  "sources": [
   "https://raw.githubusercontent.com/EnderWolf50/maalc-resource"
  ],
@@ -5444,20 +5444,20 @@
    "sha256": "8dee1bb6a2f28beb063eddca7e10af6a2378d9f774152576de0d74fdc2e1e6ed"
   },
   "pipeline/navigation.json": {
-   "size": 11449,
-   "sha256": "20d4ffa4d32cd49531f885eef0f0a3fc8d278b05b70595f5a10200495201b41d"
+   "size": 11528,
+   "sha256": "2fcbf3ac43e61008afa8bead4c581a5fee0a5c54928a105c1f7d83392641a827"
   },
   "pipeline/pass_missions.json": {
    "size": 7611,
    "sha256": "7a88fb1e3e53e4cd0bfebef60d3ee556e201be1b7d8633e8fe3d3d1a2507cc69"
   },
   "pipeline/popups.json": {
-   "size": 23578,
-   "sha256": "fe4e0094a54dc060c23b97b48f40781aa4f1fb598ce22e2fe2afdc6f3256a60e"
+   "size": 24657,
+   "sha256": "2163913de990c517b3d18923a97a32f1b76740dae7f3ed036bca10d8af6dcc62"
   },
   "pipeline/recovery.json": {
-   "size": 4724,
-   "sha256": "714619b0ae4da7fb8756f9d20ad1b21a1ce0b2553b517180a96831ac68439ede"
+   "size": 5191,
+   "sha256": "faca362bb1170f13e1d3e8cd6dcd88cb16ea2e932660b43a4198f805a12eb3f1"
   },
   "pipeline/shop.json": {
    "size": 423,
