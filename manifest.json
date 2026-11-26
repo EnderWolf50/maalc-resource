@@ -1,5 +1,5 @@
 {
- "version": "2026.11.24",
+ "version": "2026.11.26",
  "client": "1.119.0",
  "format": 3,
  "template": 7,
@@ -549,15 +549,15 @@
   },
   "data/event_table.json": {
    "size": 111159,
-   "sha256": "19ec2fc6ec660a455ce8b91211445e48137ceb12fbc608753fb7c6c787de48b6"
+   "sha256": "503e6391cf11786e8a1fc8d8ddd5823ffd14c6175d7417e37ffe928ec669550d"
   },
   "data/event_text.json": {
    "size": 378783,
    "sha256": "b664f45f1c463464b838377b6811609ca9e2392d5304fd272620e5e819141540"
   },
   "data/events.yaml": {
-   "size": 183,
-   "sha256": "baffb9c344acfea04333a0b49e7cacbd5d08db1ef4c58583fb3b6fe6eb25ee7d"
+   "size": 411,
+   "sha256": "dad17ba1bfdd374a5f9f5f6cd7032a9e5dbd658a8ec528bcf62a17a6a2a4af4c"
   },
   "data/gift_effects.json": {
    "size": 414078,
