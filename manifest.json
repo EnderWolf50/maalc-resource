@@ -1,5 +1,5 @@
 {
- "version": "2026.11.26.2",
+ "version": "2026.11.26.3",
  "client": "1.119.0",
  "format": 3,
  "template": 8,
@@ -5323,6 +5323,10 @@
    "size": 7153,
    "sha256": "cb8f21d6414f2ee992195574be3daca89cbb36c4c96e73b89724ab2e9243ff83"
   },
+  "image/Navigation/NavDriveRefraction.png": {
+   "size": 21047,
+   "sha256": "b6a5b63ad3ee7bc10a11d3e94f70a5637deca2182706ef8ddd91543b9a98448d"
+  },
   "image/Navigation/NavDriveWalpurgis.png": {
    "size": 24816,
    "sha256": "f2a110ff3343d53b1c616a12fd18ff1eca6164ad671f9e792b96cd5e9c15f880"
@@ -5444,8 +5448,8 @@
    "sha256": "8dee1bb6a2f28beb063eddca7e10af6a2378d9f774152576de0d74fdc2e1e6ed"
   },
   "pipeline/navigation.json": {
-   "size": 12847,
-   "sha256": "eb711384afb95ada681611fc46fff51b7876317a3da37fdea3ea4f15156df133"
+   "size": 13365,
+   "sha256": "c61b692266a4feb160ad00ae50db04ea24875618a0c88ccedc07a6db9b372c91"
   },
   "pipeline/pass_missions.json": {
    "size": 7611,
