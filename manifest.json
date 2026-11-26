@@ -1,8 +1,8 @@
 {
- "version": "2026.11.26",
+ "version": "2026.11.26.2",
  "client": "1.119.0",
  "format": 3,
- "template": 7,
+ "template": 8,
  "sources": [
   "https://raw.githubusercontent.com/EnderWolf50/maalc-resource"
  ],
@@ -5444,8 +5444,8 @@
    "sha256": "8dee1bb6a2f28beb063eddca7e10af6a2378d9f774152576de0d74fdc2e1e6ed"
   },
   "pipeline/navigation.json": {
-   "size": 11528,
-   "sha256": "2fcbf3ac43e61008afa8bead4c581a5fee0a5c54928a105c1f7d83392641a827"
+   "size": 12847,
+   "sha256": "eb711384afb95ada681611fc46fff51b7876317a3da37fdea3ea4f15156df133"
   },
   "pipeline/pass_missions.json": {
    "size": 7611,
