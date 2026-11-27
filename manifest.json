@@ -1,5 +1,5 @@
 {
- "version": "2026.11.27",
+ "version": "2026.11.27.2",
  "client": "1.119.0",
  "format": 4,
  "template": 8,
@@ -556,12 +556,12 @@
    "sha256": "b937c05e968be49f1dfb1673f16d1684a20a4bc75f6ea2d343a2568ac1268430"
   },
   "data/event_table.json": {
-   "size": 111159,
-   "sha256": "503e6391cf11786e8a1fc8d8ddd5823ffd14c6175d7417e37ffe928ec669550d"
+   "size": 112803,
+   "sha256": "7a417e2249851852a6f7cd5e43033bf8a2285cee8bbadf591f2b16c47530e191"
   },
   "data/event_text.json": {
-   "size": 378783,
-   "sha256": "b664f45f1c463464b838377b6811609ca9e2392d5304fd272620e5e819141540"
+   "size": 386791,
+   "sha256": "8c0e3727be4ebe1741551f4499bd45b080b842d327be5c5300131ace86b5bd36"
   },
   "data/events.yaml": {
    "size": 411,
