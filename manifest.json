@@ -1,7 +1,7 @@
 {
- "version": "2026.11.26.3",
+ "version": "2026.11.27",
  "client": "1.119.0",
- "format": 3,
+ "format": 4,
  "template": 8,
  "sources": [
   "https://raw.githubusercontent.com/EnderWolf50/maalc-resource"
@@ -30,6 +30,10 @@
   "data/buf_icons/AttackUp.webp": {
    "size": 938,
    "sha256": "901d5c2f05cd31fd08f9243a7e67fbbc2fabfbaf0f3a39e74bd7f123ae64cde6"
+  },
+  "data/buf_icons/AzureResistDown.webp": {
+   "size": 1048,
+   "sha256": "a5bb241e5c8229ecbb024268c238aa14945df24f594958c402aff4f672c09e16"
   },
   "data/buf_icons/AzureResultUp.webp": {
    "size": 1032,
@@ -527,6 +531,10 @@
    "size": 1362,
    "sha256": "cc8548a96c6b36d08dd774a7a8c53212581999d656938cb142ad2899362b03ed"
   },
+  "data/buf_icons/VioletResistDown.webp": {
+   "size": 1082,
+   "sha256": "2388d338eb22a4410c1c21130d368a2fa2f35c729d28d0309f6e79102bb2be2a"
+  },
   "data/buf_icons/VioletTakeDamageUp.webp": {
    "size": 998,
    "sha256": "fbe46db5e714e64a588a40eedcc90e8de52b090c6ad368db41bb19834a7dcaad"
@@ -560,8 +568,8 @@
    "sha256": "dad17ba1bfdd374a5f9f5f6cd7032a9e5dbd658a8ec528bcf62a17a6a2a4af4c"
   },
   "data/gift_effects.json": {
-   "size": 414078,
-   "sha256": "adceb537d9ee9bfef731e1f4dd53099f95e89cb9e1d7b6c77562c248324ba2df"
+   "size": 576103,
+   "sha256": "fad26723b2a677d788be63d22f83ade587afcc3718c9e6f9f7b90d76192563b5"
   },
   "data/gift_icons/9001.webp": {
    "size": 4880,
@@ -2516,8 +2524,8 @@
    "sha256": "03a548f2e4d6a0aa1f015abef15447c5082e57bc11694798c8b988b182ac396e"
   },
   "data/gift_text.json": {
-   "size": 690469,
-   "sha256": "8b650f8b1652004b35ed59c842c7345a09f7e4a1f7dd145b3c5bd679cdcddb66"
+   "size": 795909,
+   "sha256": "c0ef13dfa1793810914345ea7517bb3396c913aee6966d52f7ae1b683ceef1f0"
   },
   "data/grace_card/button-lit.webp": {
    "size": 2916,
